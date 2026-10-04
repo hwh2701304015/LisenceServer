@@ -7,7 +7,7 @@ server later without changing the desktop client.
 ## Product Rules
 
 - One license key can bind to one device only.
-- Supported plans: `monthly`, `quarterly`, `lifetime`.
+- Supported plans: `monthly`, `yearly`, `lifetime`.
 - Free users can repair and preview. Export/save is license gated in the
   desktop client.
 - Device support starts with Windows and leaves room for macOS by using a
@@ -52,7 +52,7 @@ payment webhook or an internal order tool.
 
 ```json
 {
-  "plan": "quarterly",
+  "plan": "yearly",
   "orderId": "paddle-order-id",
   "customerEmail": "buyer@example.com"
 }
@@ -82,6 +82,13 @@ wrangler secret put LICENSE_ADMIN_TOKEN
 wrangler d1 execute amazemend-license --file ./schema.sql
 npm install
 npm run deploy
+```
+
+If an older local or D1 database was already created with the retired
+`quarterly` plan, run:
+
+```powershell
+wrangler d1 execute amazemend-license --file ./migrations/001_quarterly_to_yearly.sql
 ```
 
 ## Migration Notes

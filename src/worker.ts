@@ -4,7 +4,7 @@ export interface Env {
   LICENSE_ADMIN_TOKEN?: string;
 }
 
-type Plan = "monthly" | "quarterly" | "lifetime";
+type Plan = "monthly" | "yearly" | "lifetime";
 
 interface ActivationRequest {
   licenseKey?: string;
@@ -90,7 +90,7 @@ async function issueLicense(request: Request, env: Env): Promise<Response> {
 
   const plan = normalizePlan(body.plan);
   if (!plan) {
-    return json({ ok: false, error: "bad_request", message: "plan must be monthly, quarterly, or lifetime." }, 400);
+    return json({ ok: false, error: "bad_request", message: "plan must be monthly, yearly, or lifetime." }, 400);
   }
 
   const issuedAt = body.startsAt && !Number.isNaN(Date.parse(body.startsAt))
@@ -217,7 +217,7 @@ function normalizeLicenseKey(value: unknown): string {
 }
 
 function normalizePlan(value: unknown): Plan | null {
-  if (value === "monthly" || value === "quarterly" || value === "lifetime") {
+  if (value === "monthly" || value === "yearly" || value === "lifetime") {
     return value;
   }
   return null;
@@ -231,7 +231,7 @@ function normalizeExpiry(plan: Plan, issuedAt: Date, explicitExpiry: string | nu
     return new Date(explicitExpiry).toISOString();
   }
   const expires = new Date(issuedAt.getTime());
-  expires.setUTCMonth(expires.getUTCMonth() + (plan === "quarterly" ? 3 : 1));
+  expires.setUTCMonth(expires.getUTCMonth() + (plan === "yearly" ? 12 : 1));
   return expires.toISOString();
 }
 

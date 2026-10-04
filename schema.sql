@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS licenses (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   license_key TEXT NOT NULL UNIQUE,
-  plan TEXT NOT NULL CHECK (plan IN ('monthly', 'quarterly', 'lifetime')),
+  plan TEXT NOT NULL CHECK (plan IN ('monthly', 'yearly', 'lifetime')),
   status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'disabled', 'refunded')),
   issued_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
   expires_at TEXT,
@@ -41,5 +41,5 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_licenses_order_id ON licenses(order_id) WH
 INSERT OR IGNORE INTO licenses (license_key, plan, status, expires_at, order_id, customer_email)
 VALUES
   ('AMZ-MONTH-DEV-0001', 'monthly', 'active', datetime('now', '+1 month'), 'dev-month', 'dev@example.com'),
-  ('AMZ-QUARTER-DEV-0001', 'quarterly', 'active', datetime('now', '+3 months'), 'dev-quarter', 'dev@example.com'),
+  ('AMZ-YEAR-DEV-0001', 'yearly', 'active', datetime('now', '+12 months'), 'dev-year', 'dev@example.com'),
   ('AMZ-LIFE-DEV-0001', 'lifetime', 'active', NULL, 'dev-life', 'dev@example.com');
