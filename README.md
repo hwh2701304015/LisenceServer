@@ -61,6 +61,28 @@ payment webhook or an internal order tool.
 The server generates a license key and calculates expiry from the plan unless
 `expiresAt` is provided.
 
+### `POST /v1/webhooks/paddle`
+
+Paddle calls this endpoint after checkout events. The server verifies
+`Paddle-Signature`, processes only `transaction.completed`, maps the Paddle
+price/custom data to a license plan, creates the license, then sends the key by
+email.
+
+Required environment variables:
+
+```text
+PADDLE_WEBHOOK_SECRET=...
+PADDLE_PRICE_MONTHLY=pri_...
+PADDLE_PRICE_YEARLY=pri_...
+PADDLE_PRICE_LIFETIME=pri_...
+RESEND_API_KEY=...
+MAIL_FROM=AmazeMend <license@amazemend.com>
+```
+
+`webhook_events` stores processed Paddle event ids so retries do not create
+duplicate licenses. A failed email send is not marked processed, so Paddle can
+retry and the same `order_id` will reuse the existing license.
+
 ## Concurrency
 
 Activation is a single conditional write:
@@ -89,6 +111,12 @@ If an older local or D1 database was already created with the retired
 
 ```powershell
 wrangler d1 execute amazemend-license --file ./migrations/001_quarterly_to_yearly.sql
+```
+
+For existing databases created before Paddle webhooks, run:
+
+```powershell
+wrangler d1 execute amazemend-license --file ./migrations/002_paddle_webhooks.sql
 ```
 
 ## Migration Notes

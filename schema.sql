@@ -33,9 +33,17 @@ CREATE TABLE IF NOT EXISTS activation_events (
   created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
 );
 
+CREATE TABLE IF NOT EXISTS webhook_events (
+  event_id TEXT PRIMARY KEY,
+  provider TEXT NOT NULL,
+  event_type TEXT NOT NULL,
+  processed_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+
 CREATE INDEX IF NOT EXISTS idx_licenses_key ON licenses(license_key);
 CREATE INDEX IF NOT EXISTS idx_licenses_status_expires ON licenses(status, expires_at);
 CREATE INDEX IF NOT EXISTS idx_activation_events_created ON activation_events(created_at);
+CREATE INDEX IF NOT EXISTS idx_webhook_events_processed ON webhook_events(processed_at);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_licenses_order_id ON licenses(order_id) WHERE order_id IS NOT NULL;
 
 INSERT OR IGNORE INTO licenses (license_key, plan, status, expires_at, order_id, customer_email)

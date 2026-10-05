@@ -5,4 +5,4 @@ compatibility_date = "2026-10-04"
 [[d1_databases]]
 binding = "DB"
 database_name = "amazemend-license"
-database_id = "replace-with-your-d1-database-id"
+database_id = "98332a94-a310-4e11-b6ea-22bb557621a4"
